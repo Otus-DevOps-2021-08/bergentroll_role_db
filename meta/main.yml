@@ -1,6 +1,8 @@
 galaxy_info:
-  author: Anton Karmanov
+  role_name: db
   namespace: bergentroll
+
+  author: Anton Karmanov
   description: Training db role for OTUS Reddit app
   company: null
   license: CC0
