@@ -1,8 +1,8 @@
 jobs:
   include:
-  - language: python
+  - name: Syntax check
+    language: python
     python: '2.7'
-    sudo: false
     addons:
       apt:
         packages:
@@ -13,19 +13,18 @@ jobs:
     - printf '[defaults]\nroles_path=../' >ansible.cfg
     script:
     - ansible-playbook tests/test.yml -i tests/inventory --syntax-check
-  - language: python
+  - name: Test with Molecule
+    language: python
     python: '3.6'
+    env:
+      - secure: BSoyOTDQxwY4Fsn0JW2JZMi+gcOGOOBW/lRL+q1AHIhKrWvnagpNGikp9xaEUx/7RCwigWbqPGu6Y3ok7HAhQ2Pn8D9hGGo6TTTQE9ykF17w4EoKx1Lfk0CaxMziimkilQh4Pq3OWQH5oFOZw5cFhSlQ4srcj0R1gmdBc0LER1H5n/dosP4ck1iGEFVk9AJCl+qH00rU1woNmu6V7ALhdqXf+K4Sq3IuT5VUqPQiY+2VRPx0vrz9/DAhkU0ciPIEDWtszKg0GsdyPTZf26O0tF6/c69YZQijVP8jfBlLjSI8EMsPpyMEhRsbndxMH+7B64xThjRjwzg/MG95hVhg79QmRGHEDmICVFzfV424277KxWsgA/h70WyhPwi4on1dLQa+Dov5/BKWfpP++JItBBkYAPuCEEJ/mNvO/6b2XoNPC8Re8TcP3b0J7QBlTVwwnV3iaMcV1/eqPoPp4NqMwAxHFBKfHKHD0caBuZ47IMWzaV4zu3AKQ4vqIJj2TvTP2gKDyVp9YOusAF1Pd7PyHnA9sjuDNzOopsrFMWCjjmLbaFdhEVm65lQSGzA7h4yV9CF8PvYrJT9QHy2mgW0pwJ5b7/ZW2DfxEESU7f/+VTfE9Jf1/CQaparDdgV/OHbckak9w48pZaCFUzva2WEiZICovl/MxUppIx+G073TMfM=
+      - secure: beEz4daHXWyhM4+1gEW0VlnEG1uVbONG38R5uF34iwgob8Qe7FNEoXod+mvmzFiQjg6Vfw8eoG3ioHZLHBKTUgqdVdBo8Ycu/3V7JJ9qYM78O+Y+/KME4F3GgWrA02o+CPavvnCdwpYvto9aKzoAB8NF7FQE2AjpOv8Mu/lFqf4QGvnm4Hp0A5kb86b6s9SQzU9kZfvGX8WfkD7/nOms4vinZ1RQ/G1T9Z2qGjXuoMTGmYGkRKo7kslkvimGKdHFIhpOJBoaSK4i0zjuq9OnyubCQZZl1l+ZnvJ5o/CH1czEn6Pvi46iLLQsz6m6kwvnJWYsE8g062StNC3ZfEQKUNPwyR7aKdIUEzQJDL60uPYmenWoxviRGoGTHjSUP8c5CPxC7/jpDFY+hFzhSrDJIKPEwZhdMG0CmqUOLuVPSSMy3CDrSzq767x84C5du771C4qA7nA5qRFHSUvsjHKlhvnZy6XNlG+ys9FBFq01sbAFwxUAIJsuo2lXT/Jp/mzzKzTFj4IJgfgEAMeC3gRB+rMtQdgMEl7kCniNXpmXNxBPho2CpdiYuJNC+Qpjo8+KcgX2/apb0X536dGlV2mAykXl1n3jsavNljrf8qgpyHW5RyIBBVuii0I21wP4XOzuumOj2wMdx3fMOt9uYiLmdGkl25v4szWG/iEig52KIcU=
+    before_install:
+      - openssl aes-256-cbc -K $encrypted_749dcc9e92f7_key -iv $encrypted_749dcc9e92f7_iv
+        -in credentials.json.enc -out credentials.json -d
     install:
-    - pip install ansible==2.3.0 molecule apache-libcloud
+    - pip install ansible==2.3.0 molecule molecule-gce apache-libcloud
     script:
     - molecule --debug test
     after_script:
     - molecule --debug destroy
-
-env:
-  global:
-  - secure: BSoyOTDQxwY4Fsn0JW2JZMi+gcOGOOBW/lRL+q1AHIhKrWvnagpNGikp9xaEUx/7RCwigWbqPGu6Y3ok7HAhQ2Pn8D9hGGo6TTTQE9ykF17w4EoKx1Lfk0CaxMziimkilQh4Pq3OWQH5oFOZw5cFhSlQ4srcj0R1gmdBc0LER1H5n/dosP4ck1iGEFVk9AJCl+qH00rU1woNmu6V7ALhdqXf+K4Sq3IuT5VUqPQiY+2VRPx0vrz9/DAhkU0ciPIEDWtszKg0GsdyPTZf26O0tF6/c69YZQijVP8jfBlLjSI8EMsPpyMEhRsbndxMH+7B64xThjRjwzg/MG95hVhg79QmRGHEDmICVFzfV424277KxWsgA/h70WyhPwi4on1dLQa+Dov5/BKWfpP++JItBBkYAPuCEEJ/mNvO/6b2XoNPC8Re8TcP3b0J7QBlTVwwnV3iaMcV1/eqPoPp4NqMwAxHFBKfHKHD0caBuZ47IMWzaV4zu3AKQ4vqIJj2TvTP2gKDyVp9YOusAF1Pd7PyHnA9sjuDNzOopsrFMWCjjmLbaFdhEVm65lQSGzA7h4yV9CF8PvYrJT9QHy2mgW0pwJ5b7/ZW2DfxEESU7f/+VTfE9Jf1/CQaparDdgV/OHbckak9w48pZaCFUzva2WEiZICovl/MxUppIx+G073TMfM=
-  - secure: beEz4daHXWyhM4+1gEW0VlnEG1uVbONG38R5uF34iwgob8Qe7FNEoXod+mvmzFiQjg6Vfw8eoG3ioHZLHBKTUgqdVdBo8Ycu/3V7JJ9qYM78O+Y+/KME4F3GgWrA02o+CPavvnCdwpYvto9aKzoAB8NF7FQE2AjpOv8Mu/lFqf4QGvnm4Hp0A5kb86b6s9SQzU9kZfvGX8WfkD7/nOms4vinZ1RQ/G1T9Z2qGjXuoMTGmYGkRKo7kslkvimGKdHFIhpOJBoaSK4i0zjuq9OnyubCQZZl1l+ZnvJ5o/CH1czEn6Pvi46iLLQsz6m6kwvnJWYsE8g062StNC3ZfEQKUNPwyR7aKdIUEzQJDL60uPYmenWoxviRGoGTHjSUP8c5CPxC7/jpDFY+hFzhSrDJIKPEwZhdMG0CmqUOLuVPSSMy3CDrSzq767x84C5du771C4qA7nA5qRFHSUvsjHKlhvnZy6XNlG+ys9FBFq01sbAFwxUAIJsuo2lXT/Jp/mzzKzTFj4IJgfgEAMeC3gRB+rMtQdgMEl7kCniNXpmXNxBPho2CpdiYuJNC+Qpjo8+KcgX2/apb0X536dGlV2mAykXl1n3jsavNljrf8qgpyHW5RyIBBVuii0I21wP4XOzuumOj2wMdx3fMOt9uYiLmdGkl25v4szWG/iEig52KIcU=
-before_install:
-- openssl aes-256-cbc -K $encrypted_749dcc9e92f7_key -iv $encrypted_749dcc9e92f7_iv
-  -in credentials.json.enc -out credentials.json -d
