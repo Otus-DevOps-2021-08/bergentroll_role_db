@@ -4,7 +4,7 @@ jobs:
     language: python
     python: '3.8'
     env:
-      - ANSIBLE_ROLES_PATH="$TRAVIS_BUILD_DIR"
+      - ANSIBLE_ROLES_PATH="$TRAVIS_BUILD_DIR/../"
     install:
       - pip install ansible
       - ansible --version
