@@ -4,7 +4,6 @@ dependency:
   name: galaxy
 driver:
   name: gce
-  project_id: null
   region: us-central1
   network_name: default
   subnetwork_name: default
