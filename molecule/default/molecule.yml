@@ -4,13 +4,12 @@ dependency:
   name: galaxy
 driver:
   name: gce
-  project_id: main-boulevard-332316
+  project_id: null
   region: us-central1
   network_name: default
   subnetwork_name: default
   auth_kind: serviceaccount
-  # TODO
-  service_account_file: ~/sources/otus-devops/bergentroll_role_db/gkey.json
+  service_account_file: null
   external_access: true
   instance_os_type: linux
 
