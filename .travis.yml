@@ -4,12 +4,12 @@ jobs:
     language: python
     python: '3.8'
     env:
-      - ANSIBLE_ROLES_PATH="$TRAVIS_BUILD_DIR/../"
+      - ANSIBLE_ROLES_PATH='../'
     install:
     - pip install ansible
     - ansible --version
     script:
-    - ansible-playbook tests/test.yml -i tests/inventory --syntax-check
+    - ansible-playbook tests/test.yml -i tests/inventory --syntax-check -e 'role_name=bergentroll_role_db'
   - name: Test with Molecule
     language: python
     python: '3.8'
