@@ -4,10 +4,10 @@ jobs:
     language: python
     python: '3.8'
     install:
-    - pip install ansible
-    - ansible --version
+      - pip install ansible
+      - ansible --version
     script:
-    - ansible-playbook tests/test.yml -i tests/inventory --syntax-check
+      - ansible-playbook tests/test.yml -i tests/inventory --syntax-check
 
   - name: Test with Molecule
     language: python
@@ -19,8 +19,9 @@ jobs:
       - openssl aes-256-cbc -K $encrypted_749dcc9e92f7_key -iv $encrypted_749dcc9e92f7_iv
         -in credentials.json.enc -out credentials.json -d
     install:
-    - pip install ansible molecule molecule-gce apache-libcloud google-auth
+      - pip install ansible molecule molecule-gce apache-libcloud google-auth
+      - ansible-galaxy collection install google.cloud community.crypto
     script:
-    - molecule --debug test
+      - molecule --debug test
     after_script:
-    - molecule --debug destroy
+      - molecule --debug destroy
