@@ -1,6 +1,10 @@
 db
 =========
 
+> FIXME: Status is for bergentroll/bergentroll_role_db repo
+
+[![Build Status](https://app.travis-ci.com/bergentroll/bergentroll_role_db.svg?branch=main)](https://app.travis-ci.com/bergentroll/bergentroll_role_db)
+
 Just a homework
 
 Requirements
