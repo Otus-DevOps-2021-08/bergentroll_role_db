@@ -20,7 +20,7 @@ jobs:
     - openssl aes-256-cbc -K $encrypted_749dcc9e92f7_key -iv $encrypted_749dcc9e92f7_iv
       -in credentials.json.enc -out credentials.json -d
     install:
-    - pip install ansible molecule molecule-gce apache-libcloud google-auth
+    - pip install ansible molecule molecule-gce testinfra
     - ansible-galaxy collection install google.cloud community.crypto
     script:
     - molecule --debug test
