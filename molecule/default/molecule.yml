@@ -1,11 +1,23 @@
 ---
+
 dependency:
   name: galaxy
 driver:
-  name: vagrant
+  name: gce
+  region: us-central1
+  network_name: default
+  subnetwork_name: default
+  auth_kind: serviceaccount
+  service_account_file: null
+  external_access: true
+  instance_os_type: linux
+
 platforms:
-  - name: instance
-    box: generic/ubuntu1604
+  - name: molecule-role-db-test
+    machine_type: e2-standard-2
+    preemptible: true
+    zone: us-central1-a
+    image: projects/ubuntu-os-cloud/global/images/family/ubuntu-minimal-1604-lts
 provisioner:
   name: ansible
   lint:

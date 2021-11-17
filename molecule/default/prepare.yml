@@ -1,0 +1,13 @@
+---
+
+- name: Prepare
+  hosts: all
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Install dependencies
+      package:
+        name:
+          - apt-transport-https
+        state: latest
+        update_cache: true

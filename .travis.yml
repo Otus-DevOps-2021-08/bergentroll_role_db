@@ -1,29 +1,33 @@
----
-language: python
-python: "2.7"
-
-# Use the new container infrastructure
-sudo: false
-
-# Install ansible
-addons:
-  apt:
-    packages:
-    - python-pip
-
-install:
-  # Install ansible
-  - pip install ansible
-
-  # Check ansible version
-  - ansible --version
-
-  # Create ansible.cfg with correct roles_path
-  - printf '[defaults]\nroles_path=../' >ansible.cfg
-
-script:
-  # Basic role syntax check
-  - ansible-playbook tests/test.yml -i tests/inventory --syntax-check
+jobs:
+  include:
+  - name: Syntax check
+    language: python
+    python: '3.8'
+    env:
+    - ANSIBLE_ROLES_PATH='../'
+    install:
+    - pip install ansible
+    - ansible --version
+    script:
+    - ansible-playbook tests/test.yml -i tests/inventory --syntax-check -e 'role_name=bergentroll_role_db'
+  - name: Test with Molecule
+    language: python
+    python: '3.8'
+    env:
+    - secure: BSoyOTDQxwY4Fsn0JW2JZMi+gcOGOOBW/lRL+q1AHIhKrWvnagpNGikp9xaEUx/7RCwigWbqPGu6Y3ok7HAhQ2Pn8D9hGGo6TTTQE9ykF17w4EoKx1Lfk0CaxMziimkilQh4Pq3OWQH5oFOZw5cFhSlQ4srcj0R1gmdBc0LER1H5n/dosP4ck1iGEFVk9AJCl+qH00rU1woNmu6V7ALhdqXf+K4Sq3IuT5VUqPQiY+2VRPx0vrz9/DAhkU0ciPIEDWtszKg0GsdyPTZf26O0tF6/c69YZQijVP8jfBlLjSI8EMsPpyMEhRsbndxMH+7B64xThjRjwzg/MG95hVhg79QmRGHEDmICVFzfV424277KxWsgA/h70WyhPwi4on1dLQa+Dov5/BKWfpP++JItBBkYAPuCEEJ/mNvO/6b2XoNPC8Re8TcP3b0J7QBlTVwwnV3iaMcV1/eqPoPp4NqMwAxHFBKfHKHD0caBuZ47IMWzaV4zu3AKQ4vqIJj2TvTP2gKDyVp9YOusAF1Pd7PyHnA9sjuDNzOopsrFMWCjjmLbaFdhEVm65lQSGzA7h4yV9CF8PvYrJT9QHy2mgW0pwJ5b7/ZW2DfxEESU7f/+VTfE9Jf1/CQaparDdgV/OHbckak9w48pZaCFUzva2WEiZICovl/MxUppIx+G073TMfM=
+    - GCP_SERVICE_ACCOUNT_FILE="${TRAVIS_BUILD_DIR}/credentials.json"
+    before_install:
+    - openssl aes-256-cbc -K $encrypted_749dcc9e92f7_key -iv $encrypted_749dcc9e92f7_iv
+      -in credentials.json.enc -out credentials.json -d
+    install:
+    - pip install ansible molecule molecule-gce testinfra
+    - ansible-galaxy collection install google.cloud community.crypto
+    script:
+    - molecule --debug test
+    after_script:
+    - molecule --debug destroy
 
 notifications:
-  webhooks: https://galaxy.ansible.com/api/v1/notifications/
+  slack:
+    rooms:
+      secure: sZIFRnBy1bkq7tMQeAL/GuBcKMRWsoLBmPcem7LMYjnokr6MHaWCpHcWfnNCYNepP5V/4z4up8MPVukG3PX+KA/62APN8N+0hEcQXp1BRAuNO0lnGQxV5de1rLCloJPFgNl5nhu5AImH7X/ERVQRRT3mDMfzT3kMI2kl6dgD6h973UVk0oki0zsL7OkXQkB2OVGfXsui3MgOqlIYzd3xcdvrb+f/YF2obq2BisXpZoYYJ+4wds4rS95XIGSXQUpnNf8Bq7olee/HvH65wjIodu6ctNnSr8ZZfyXjYgV41vKTjoAv3NDuVQG3aykKAbqhwvjfuJtf6rChj/mnHxn9F+lqwNuMSVZt0AuRLej4M2GaUEiMwkmHyAGdtN0exWnfetb/AR5BQYW8AuImqxdg8ofvgODdAI7Q4NUEzZ8qDmXlJEpFpylK0EuSNn+Gvewzw2DupurSsbbx5/mjGqVzdr4doBVc49dwftuJNdtqJagHw2jFJDFERizUx64CHGJPoWJVr0D3cATQ1QILWTfhQEp4mmwT2ElWPqHdPRvRJEUS4rr3OvBSPyIwhOluidbatcOjOpK9pGKwqiujFr2rpl/sCRVwGBNx5pbJcSRcWysjCCeF+VjIkHVrksc8o+B0kK67x2+uES+DwrVArpijpj7Jp6yocG5ked4gG2sKUZU=
